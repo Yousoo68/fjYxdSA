@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사이트 주소 복사하기</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-hover: #3a56d4;
+            --text-dark: #2b2d42;
+            --text-light: #8d99ae;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 
+                         'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 
+                         sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            padding: 30px 25px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+        
+        .title-image {
+            width: 100%;
+            max-width: 240px;
+            height: auto;
+            object-fit: contain;
+        }
+        
+        .instruction-text {
+            color: var(--text-light);
+            font-size: 15px;
+            margin: 0;
+            width: 100%;
+            line-height: 1.6;
+            font-weight: 400;
+            text-align: center;
+        }
+        
+        .copy-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 8px;
+        }
+        
+        .copy-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .toast {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 100;
+            opacity: 0;
+            transition: var(--transition);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 24px 20px;
+                gap: 20px;
+            }
+            
+            .instruction-text {
+                font-size: 14px;
+            }
+            
+            .copy-btn {
+                padding: 14px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://raw.githubusercontent.com/Yousoo68/fjYxbSA/refs/heads/main/Gallery.png" class="title-image" alt="사이트 주소 복사">
+        <p class="instruction-text">아래 사이트 주소를 복사하고<br>크롬 또는 구글에서 복사한 주소를 입력해서    접속해주세요</p>
+        <button class="copy-btn" id="copyButton">사이트 주소 복사하기</button>
+    </div>
+
+    <div class="toast" id="toast">주소가 복사되었습니다!</div>
+
+    <script>
+        document.getElementById('copyButton').addEventListener('click', async () => {
+            const url = "https://yousoo68.github.io/fjYxbSA/";
+            
+            try {
+                await navigator.clipboard.writeText(url);
+                showToast("주소가 복사되었습니다!");
+            } catch (err) {
+                console.log("클립보드 API 실패, 대체 방법 시도");
+                copyToClipboardFallback(url);
+            }
+        });
+
+        function copyToClipboardFallback(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast("주소가 복사되었습니다!");
+                } else {
+                    showToast("복사에 실패했습니다. 수동으로 복사해주세요.", true);
+                }
+            } catch (err) {
+                showToast("복사에 실패했습니다. 수동으로 복사해주세요.", true);
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.backgroundColor = isError ? '#ff4444' : 'rgba(0, 0, 0, 0.85)';
+            toast.style.opacity = 1;
+            
+            setTimeout(() => {
+                toast.style.opacity = 0;
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
